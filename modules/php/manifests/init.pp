@@ -9,7 +9,7 @@ class php {
     "php5-dev",
     "php5-gd",
     "php5-mcrypt",
-    "libapache2-mod-php5"
+    "php5-fpm"
   ]
 
   package { $packages:
