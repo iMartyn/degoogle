@@ -7,6 +7,8 @@ Vagrant.configure("2") do |config|
     puppet.manifests_path = "manifests"
     puppet.manifest_file = "default.pp"
     puppet.module_path = "modules"
+    puppet.hiera_config_path = "hiera.yaml"
+    puppet.working_directory = "/vagrant/hieradata"
   end
 
   # Every Vagrant virtual environment requires a box to build off of.
