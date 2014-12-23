@@ -1,0 +1,5 @@
+domain: 'example.com'
+admin_user: 'martyn'
+admin_name: 'Martyn Ranyard'
+mysql_root_password: 'ObviouslyChangeThis!!!'
+mysql_mail_password: 'ObviouslyChangeThis!'
