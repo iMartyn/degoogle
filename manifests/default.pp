@@ -5,6 +5,7 @@ Exec {
 
 include bootstrap
 include tools
+include nginx
 include php
 include php::pear
 include php::pecl
