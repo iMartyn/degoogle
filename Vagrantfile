@@ -1,5 +1,7 @@
 Vagrant.configure("2") do |config|
 
+  config.puppet_install.puppet_version = :latest
+
   # Enable the Puppet provisioner, with will look in manifests
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = "manifests"
@@ -8,7 +10,7 @@ Vagrant.configure("2") do |config|
   end
 
   # Every Vagrant virtual environment requires a box to build off of.
-  config.vm.box = "precise32"
+  config.vm.box = "deb76"
 
   # Forward guest port 80 to host port 8888 and name mapping
   config.vm.network :forwarded_port, guest: 80, host: 8888

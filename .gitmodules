@@ -1,0 +1,3 @@
+[submodule "modules/preseed"]
+	path = modules/preseed
+	url = git@github.com:stankevich/puppet-preseed.git
