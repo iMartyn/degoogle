@@ -11,4 +11,6 @@ include php::pear
 include php::pecl
 include mysql
 include postfix
+include dspam
 include postfix::config
+include dspam::config

@@ -1,12 +1,14 @@
 define postfix_maincf($key="",$value="") {
     exec { "postfix_maincf_${key}_${value}":
-        command => "/usr/sbin/postconf -e \"$key = $value\""
+        command => "/usr/sbin/postconf -e \"$key = $value\"",
+        notify => Service['postfix'],
+        require => Package['postfix']
     }
 }
 
 class postfix::config {
-    require postfix
     # Base config
+    $domain = hiera('domain')
     postfix_maincf{ 'myhostname':
         key => "myhostname",
         value => "mail.$domain"
@@ -21,7 +23,7 @@ class postfix::config {
     }
     postfix_maincf{ 'smtpd_recipient_restrictions':
         key => "smtpd_recipient_restrictions",
-        value => "permit_sasl_authenticated check_client_access pcre:/etc/postfix/dspam_filter_access check_policy_service inet:127.0.0.1:60000"
+        value => "check_relay_domains permit_sasl_authenticated check_client_access pcre:/etc/postfix/dspam_filter_access check_policy_service inet:127.0.0.1:60000"
     }
     postfix_maincf{ 'dspam_destination_recipient_limit':
         key => "dspam_destination_recipient_limit",
@@ -91,4 +93,53 @@ class postfix::config {
         key => "virtual_transport",
         value => "dovecot"
     }
+
+    file{ 'mail.sql':
+        path => "/tmp/mail.sql",
+        content => template("postfix/mail.sql.erb"),
+        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+        replace => false
+    }
+
+    $admin_user = hiera('admin_user')
+    $admin_name = hiera('admin_name')
+    $mysql_root_password = hiera('mysql_root_password')
+    $mysql_mail_password = hiera('mysql_mail_password')
+
+    exec{ 'create-mail-db':
+        unless => "mysql -uroot -p$mysql_root_password mail -e 'select * from admin' > /dev/null",
+        command => "/usr/bin/mysql -u root -p$mysql_root_password mysql < /tmp/mail.sql && echo \"-- Removed for security\" > /tmp/mail.sql",
+        require => [ Service['mysql'], File['mail.sql'], Exec[set-mysql-root-password] ]
+    }
+
+    file{ 'mysql_virtual_domains_maps.cf':
+        path => "/etc/postfix/mysql_virtual_domains_maps.cf",
+        content => template("postfix/mysql_virtual_domains_maps.cf.erb"),
+        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+    }
+
+    file{ 'mysql_virtual_alias_maps.cf':
+        path => "/etc/postfix/mysql_virtual_alias_maps.cf",
+        content => template("postfix/mysql_virtual_alias_maps.cf.erb"),
+        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+    }
+
+    file{ 'mysql_virtual_mailbox_maps.cf':
+        path => "/etc/postfix/mysql_virtual_mailbox_maps.cf",
+        content => template("postfix/mysql_virtual_mailbox_maps.cf.erb"),
+        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+    }
+
+    file{ 'mysql_virtual_mailbox_limit_maps.cf':
+        path => "/etc/postfix/mysql_virtual_mailbox_limit_maps.cf",
+        content => template("postfix/mysql_virtual_mailbox_limit_maps.cf.erb"),
+        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+    }
+
+    file{ 'dspam_filter_access':
+        path => "/etc/postfix/dspam_filter_access",
+        content => template("postfix/dspam_filter_access.erb"),
+        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+    }
+
 }

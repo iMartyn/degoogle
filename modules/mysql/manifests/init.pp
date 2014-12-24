@@ -24,7 +24,7 @@ class mysql {
   }
 
   # set mysql password
-  exec { "set-mysql-password":
+  exec { "set-mysql-root-password":
     unless => "mysqladmin -uroot -p$mysqlpw status",
     command => "mysqladmin -uroot password $mysqlpw",
     require => Service["mysql"],
@@ -32,7 +32,11 @@ class mysql {
 
   exec { "set-mysql-mail-password":
     unless => "mysqladmin -umail -p$mailpw status",
-    command => "mysql -uroot -p$mysqlpw -c 'CREATE USER `mail`@`localhost` IDENTIFIED BY \"$mailpw\"; GRANT ALL PRIVILEGES ON `mail`.* TO `mail`@`localhost`'",
-    require => Service["mysql"],
+    command => "mysql -uroot -p$mysqlpw mysql -e 'CREATE USER `mail`@`localhost` IDENTIFIED BY \"$mailpw\"; GRANT ALL PRIVILEGES ON `mail`.* TO `mail`@`localhost`'",
+    require => [
+        Service["mysql"],
+        Exec["set-mysql-root-password"],
+        Exec["create-mail-db"]
+    ]
   }
 }
