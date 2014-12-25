@@ -142,4 +142,11 @@ class postfix::config {
         require => [ Service['mysql'], Exec[set-mysql-root-password] ],
     }
 
+    exec{ 'add-dspam-to-master.cf':
+        unless => 'grep ^dspam /etc/postfix/master.cf',
+        command => 'echo "dspam  unix    -   n       n       -        10      pipe" >> /etc/postfix/master.cf; echo "  flags=Ru user=dspam argv=/usr/bin/dspam --deliver=innocent,spam --user $recipient -i -f $sender -- $recipient" >> /etc/postfix/master.cf',
+        notify => Service['postfix'],
+        require => Package['postfix']
+    }
+
 }
