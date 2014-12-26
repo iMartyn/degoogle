@@ -66,4 +66,10 @@ class dovecot::config {
         content => template("dovecot/auth-master.conf.ext.erb"),
         require => Package['dovecot-imapd']
     }
+
+    user{ 'vmail':
+        ensure => present,
+        gid => 'mail',
+        shell => '/bin/false'
+    }
 }
