@@ -1,6 +1,16 @@
 define postfix_maincf($key="",$value="") {
     exec { "postfix_maincf_${key}_${value}":
         command => "/usr/sbin/postconf -e \"$key = $value\"",
+        unless => "postconf $key | sed s/'.*= '// | grep \"^$value\$\"",
+        notify => Service['postfix'],
+        require => Package['postfix']
+    }
+}
+
+define postfix_mastercf_uncomment($name="") {
+    exec { "postfix_mastercf_uncomment_$name":
+        command => "sed s/\"^#\\($name[ \\t]\\)\"/\"\\1\"/g -i /etc/postfix/master.cf",
+        unless => "grep \"^$name[ \\t]\" /etc/postfix/master.cf", 
         notify => Service['postfix'],
         require => Package['postfix']
     }
@@ -17,10 +27,10 @@ class postfix::config {
         key => "mydestination",
         value => "mail.$domain, $domain"
     }
-    postfix_maincf{ 'smtpd_relay_restrictions':
-        key => "smtpd_relay_restrictions",
-        value => "permit_mynetworks permit_sasl_authenticated defer_unauth_destination"
-    }
+#    postfix_maincf{ 'smtpd_relay_restrictions': # Not on this version of postfix
+#        key => "smtpd_relay_restrictions",
+#        value => "permit_mynetworks permit_sasl_authenticated defer_unauth_destination"
+#    }
     postfix_maincf{ 'smtpd_recipient_restrictions':
         key => "smtpd_recipient_restrictions",
         value => "check_relay_domains permit_sasl_authenticated check_client_access pcre:/etc/postfix/dspam_filter_access check_policy_service inet:127.0.0.1:60000"
@@ -144,9 +154,33 @@ class postfix::config {
 
     exec{ 'add-dspam-to-master.cf':
         unless => 'grep ^dspam /etc/postfix/master.cf',
-        command => 'echo "dspam  unix    -   n       n       -        10      pipe" >> /etc/postfix/master.cf; echo "  flags=Ru user=dspam argv=/usr/bin/dspam --deliver=innocent,spam --user $recipient -i -f $sender -- $recipient" >> /etc/postfix/master.cf',
+        command => 'echo "dspam  unix    -   n       n       -        10      pipe" >> /etc/postfix/master.cf; echo "  flags=Ru user=dspam argv=/usr/bin/dspam --deliver=innocent,spam --user \$recipient -i -f \$sender -- \$recipient" >> /etc/postfix/master.cf',
         notify => Service['postfix'],
         require => Package['postfix']
     }
 
+    exec{ 'add-dovecot-to-master.cf':
+        unless => 'grep ^dovecot /etc/postfix/master.cf',
+        command => 'echo "dovecot   unix    -   n   n   -   -   pipe" >> /etc/postfix/master.cf; echo "  flags=DRhu user=vmail:mail argv=/usr/lib/dovecot/deliver -d \$(recipient)" >> /etc/postfix/master.cf',
+        notify => Service['postfix'],
+        require => Package['postfix']
+    }
+
+    exec{ 'switch-pickup-to-unix-socket':
+        unless => 'grep -P "^pickup[\t ]*unix" /etc/postfix/master.cf',
+        command => 'sed s/"^\(pickup[ \t]*\)fifo"/"\1unix"/g -i /etc/postfix/master.cf',
+        notify => Service['postfix'],
+        require => Package['postfix']
+    }
+
+    exec{ 'switch-qmgr-to-unix-socket':
+        unless => 'grep -P "^qmgr[\t ]*unix" /etc/postfix/master.cf',
+        command => 'sed s/"^\(qmgr[ \t]*\)fifo"/"\1unix"/g -i /etc/postfix/master.cf',
+        notify => Service['postfix'],
+        require => Package['postfix']
+    }
+
+    postfix_mastercf_uncomment{ 'uncomment_submission':
+        name => "submission",
+    }
 }
