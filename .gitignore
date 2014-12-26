@@ -3,4 +3,4 @@ vagrant
 .idea
 webroot
 .DS_Store
-modules/ssl/files
+modules/ssl/files/
