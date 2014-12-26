@@ -2,9 +2,28 @@ class dspam::config {
 
     $mysql_dspam_password = hiera('mysql_dspam_password')
     $mysql_root_password = hiera('mysql_root_password')
+    $domain = hiera('domain')
     file{ 'dspam.conf':
         path => "/etc/dspam/dspam.conf",
         content => template("dspam/dspam.conf.erb"),
+        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+    }
+
+    file{ 'txt/firstrun.txt':
+        path => "/etc/dspam/txt/firstrun.txt",
+        content => template("dspam/firstrun.txt.erb"),
+        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+    }
+
+    file{ 'txt/firstspam.txt':
+        path => "/etc/dspam/txt/firstspam.txt",
+        content => template("dspam/firstspam.txt.erb"),
+        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+    }
+
+    file{ 'txt/quarantinefull.txt':
+        path => "/etc/dspam/txt/quarantinefull.txt",
+        content => template("dspam/quarantinefull.txt.erb"),
         require => [ Service['mysql'], Exec[set-mysql-root-password] ],
     }
 
