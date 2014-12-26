@@ -7,7 +7,7 @@ class ssl {
     }
     $mailhostname = hiera('mailhostname')
     $cloudhostname = hiera('cloudhostname')
-    $pmahostname = hiera('pmahostname')
+    $pfahostname = hiera('pfahostname')
     file { "/etc/ssl/private/$mailhostname.key":
         source => "puppet:///modules/ssl/$mailhostname.key",
         owner => 'root',
@@ -32,14 +32,14 @@ class ssl {
         group => 'root',
         mode => 600
     }
-    file { "/etc/ssl/private/$pmahostname.key":
-        source => "puppet:///modules/ssl/$pmahostname.key",
+    file { "/etc/ssl/private/$pfahostname.key":
+        source => "puppet:///modules/ssl/$pfahostname.key",
         owner => 'root',
         group => 'root',
         mode => 600
     }
-    file { "/etc/ssl/mycerts/$pmahostname.pem":
-        source => "puppet:///modules/ssl/$pmahostname.pem",
+    file { "/etc/ssl/mycerts/$pfahostname.pem":
+        source => "puppet:///modules/ssl/$pfahostname.pem",
         owner => 'root',
         group => 'root',
         mode => 600

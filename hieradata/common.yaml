@@ -7,5 +7,5 @@ mysql_dspam_password: 'ChangeThisToo'
 
 # Shouldn't need to change beyond this part but may want to
 mailhostname: 'mail' #first part of fqdn e.g. mail for mail.example.com
-pmahostname: 'pma' #first part of fqdn e.g. pma for pma.example.com
+pfahostname: 'pfa' #first part of fqdn e.g. pfa for pfa.example.com
 cloudhostname: 'cloud' #first part of fqdn e.g. cloud for cloud.example.com
