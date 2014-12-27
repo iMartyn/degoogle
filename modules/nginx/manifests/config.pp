@@ -41,7 +41,7 @@ class nginx::config {
     }
 
     file { 'nginx-default-enabled':
-        path => /etc/nginx/sites-enabled/default',
+        path => '/etc/nginx/sites-enabled/default',
         ensure => absent
     }
 }
