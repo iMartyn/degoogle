@@ -17,3 +17,4 @@ include ssl
 include postfix::config
 include dspam::config
 include dovecot::config
+include nginx::config
