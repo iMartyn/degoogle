@@ -104,17 +104,17 @@ class postfix::config {
         value => "dovecot"
     }
 
+    $admin_user = hiera('admin_user')
+    $admin_name = hiera('admin_name')
+    $mysql_root_password = hiera('mysql_root_password')
+    $mysql_mail_password = hiera('mysql_mail_password')
+
     file{ 'mail.sql':
         path => "/tmp/mail.sql",
         content => template("postfix/mail.sql.erb"),
         require => [ Service['mysql'], Exec[set-mysql-root-password] ],
         replace => false
     }
-
-    $admin_user = hiera('admin_user')
-    $admin_name = hiera('admin_name')
-    $mysql_root_password = hiera('mysql_root_password')
-    $mysql_mail_password = hiera('mysql_mail_password')
 
     exec{ 'create-mail-db':
         unless => "mysql -uroot -p$mysql_root_password mail -e 'select * from admin' > /dev/null",
