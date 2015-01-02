@@ -125,7 +125,7 @@ class postfix::config {
 
     exec{ 'create-mail-db':
         unless => "mysql -uroot -p$mysql_root_password mail -e 'select * from admin' > /dev/null",
-        command => "/usr/bin/mysql -u root -p$mysql_root_password mysql < /tmp/mail.sql && echo \"-- Removed for security\" > /tmp/mai_l.sql",
+        command => "/usr/bin/mysql -u root -p$mysql_root_password mysql < /tmp/mail.sql && echo \"-- Removed for security\" > /tmp/mail.sql",
         require => [ Service['mysql'], File['mail.sql'], Exec[set-mysql-root-password], Exec[ 'hashmailadminpw' ] ]
     }
 
