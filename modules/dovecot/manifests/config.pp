@@ -1,5 +1,6 @@
 class dovecot::config {
     $mailhostname = hiera('mailhostname')
+    $mysql_mail_pw = hiera('mysql_mail_password')
     $domain = hiera('domain')
     file{ 'dovecot.conf':
         path => "/etc/dovecot/dovecot.conf",
