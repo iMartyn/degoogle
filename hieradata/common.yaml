@@ -1,9 +1,11 @@
 domain: 'example.com'
-admin_user: 'martyn'
-admin_name: 'Martyn Ranyard'
+admin_user: 'joe'
+admin_name: 'Joe Bloggs'
+admin_password: 'CorrectHorseBatteryStaple'
 mysql_root_password: 'ObviouslyChangeThis!!!'
 mysql_mail_password: 'ObviouslyChangeThis!'
 mysql_dspam_password: 'ChangeThisToo'
+mysql_oc_password: 'AndThisOne'
 
 # Shouldn't need to change beyond this part but may want to
 mailhostname: 'mail' #first part of fqdn e.g. mail for mail.example.com

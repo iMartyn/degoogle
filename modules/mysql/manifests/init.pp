@@ -4,6 +4,7 @@ class mysql {
   $mysqlpw = hiera('mysql_root_password')
   $mailpw = hiera('mysql_mail_password')
   $dspampw = hiera('mysql_dspam_password')
+  $owncloudpw = hiera('mysql_oc_password')
 
   # install mysql server
   package { "mysql-server":
@@ -43,6 +44,16 @@ class mysql {
   exec { "set-mysql-dspam-password":
     unless => "mysqladmin -udspam -p$dspampw status",
     command => "mysql -uroot -p$mysqlpw mysql -e 'CREATE USER `dspam`@`localhost` IDENTIFIED BY \"$dspampw\"; GRANT ALL PRIVILEGES ON `dspam`.* TO `dspam`@`localhost`'",
+    require => [
+        Service["mysql"],
+        Exec["set-mysql-root-password"],
+        Exec["create-mail-db"]
+    ]
+  }
+
+  exec { "set-mysql-owncloud-password":
+    unless => "mysqladmin -uowncloud -p$owncloudpw status",
+    command => "mysql -uroot -p$mysqlpw mysql -e 'CREATE USER `owncloud`@`localhost` IDENTIFIED BY \"$owncloudpw\"; GRANT ALL PRIVILEGES ON `owncloud`.* TO `owncloud`@`localhost`'",
     require => [
         Service["mysql"],
         Exec["set-mysql-root-password"],
