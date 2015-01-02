@@ -4,7 +4,8 @@ class nginx::config {
     file{ 'nginx-cloud-available':
         path => "/etc/nginx/sites-available/cloud",
         content => template("nginx/cloud.erb"),
-        notify => Service['nginx']
+        notify => Service['nginx'],
+        require => Package['nginx']
     }
     file{ 'nginx-cloud-enabled':
         path => '/etc/nginx/sites-enabled/cloud',
@@ -17,7 +18,8 @@ class nginx::config {
     file{ 'nginx-mail-available':
         path => "/etc/nginx/sites-available/mail",
         content => template("nginx/mail.erb"),
-        notify => Service['nginx']
+        notify => Service['nginx'],
+        require => Package['nginx']
     }
     file{ 'nginx-mail-enabled':
         path => '/etc/nginx/sites-enabled/mail',
@@ -30,7 +32,8 @@ class nginx::config {
     file{ 'nginx-pfa-available':
         path => "/etc/nginx/sites-available/pfa",
         content => template("nginx/pfa.erb"),
-        notify => Service['nginx']
+        notify => Service['nginx'],
+        require => Package['nginx']
     }
     file{ 'nginx-pfa-enabled':
         path => '/etc/nginx/sites-enabled/pfa',
@@ -42,6 +45,7 @@ class nginx::config {
 
     file { 'nginx-default-enabled':
         path => '/etc/nginx/sites-enabled/default',
-        ensure => absent
+        ensure => absent,
+        require => Package['nginx']
     }
 }
