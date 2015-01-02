@@ -15,4 +15,8 @@ class dovecot {
         ensure => present,
         require => Exec["apt-get update"]
     }
+    service { 'dovecot' :
+        ensure => running,
+        enable => true
+    }
 }
