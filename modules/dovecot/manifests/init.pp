@@ -11,6 +11,10 @@ class dovecot {
         ensure => present,
         require => Exec["apt-get update"]
     }
+    package { 'dovecot-antispam' :
+        ensure => present,
+        require => Exec["apt-get update"]
+    }
     package { 'dovecot-managesieved' :
         ensure => present,
         require => Exec["apt-get update"]

@@ -85,4 +85,11 @@ class dovecot::config {
         shell => '/bin/false',
         notify => Service['dovecot']
     }
+
+    file{ ['/var/vmail',"/var/vmail/${domain}"]:
+        ensure => "directory",
+        owner => 'vmail',
+        group => 'mail',
+        mode => 770
+    }
 }

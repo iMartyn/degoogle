@@ -106,6 +106,7 @@ class postfix::config {
 
     $admin_user = hiera('admin_user')
     $admin_name = hiera('admin_name')
+    $admin_pass = hiera('admin_password')
     $mysql_root_password = hiera('mysql_root_password')
     $mysql_mail_password = hiera('mysql_mail_password')
 
@@ -116,10 +117,16 @@ class postfix::config {
         replace => false
     }
 
+    exec{ 'hashmailadminpw':
+        onlyif => "grep '############ENCPASS##############' /tmp/mail.sql",
+        require => File['mail.sql'],
+        command => "sed s/'############ENCPASS##############'/\"`openssl passwd -1 -salt $(pwgen -nC 8 1 | sed s/' '//g) $admin_pass`\"/g -i /tmp/mail.sql",
+    }
+
     exec{ 'create-mail-db':
         unless => "mysql -uroot -p$mysql_root_password mail -e 'select * from admin' > /dev/null",
-        command => "/usr/bin/mysql -u root -p$mysql_root_password mysql < /tmp/mail.sql && echo \"-- Removed for security\" > /tmp/mail.sql",
-        require => [ Service['mysql'], File['mail.sql'], Exec[set-mysql-root-password] ]
+        command => "/usr/bin/mysql -u root -p$mysql_root_password mysql < /tmp/mail.sql && echo \"-- Removed for security\" > /tmp/mai_l.sql",
+        require => [ Service['mysql'], File['mail.sql'], Exec[set-mysql-root-password], Exec[ 'hashmailadminpw' ] ]
     }
 
     file{ 'mysql_virtual_domains_maps.cf':
