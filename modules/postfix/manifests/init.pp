@@ -23,11 +23,6 @@ class postfix {
         ]
     }
 
-    package { 'postfixadmin':
-        ensure => present,
-        require => Exec["apt-get update"]
-    }
-
     service { 'postfix':
         ensure => "running",
         enable => "true"
