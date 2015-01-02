@@ -5,6 +5,7 @@ class mysql {
   $mailpw = hiera('mysql_mail_password')
   $dspampw = hiera('mysql_dspam_password')
   $owncloudpw = hiera('mysql_oc_password')
+  $roundcubepw = hiera('mysql_rc_password')
 
   # install mysql server
   package { "mysql-server":
@@ -54,6 +55,16 @@ class mysql {
   exec { "set-mysql-owncloud-password":
     unless => "mysqladmin -uowncloud -p$owncloudpw status",
     command => "mysql -uroot -p$mysqlpw mysql -e 'CREATE USER `owncloud`@`localhost` IDENTIFIED BY \"$owncloudpw\"; GRANT ALL PRIVILEGES ON `owncloud`.* TO `owncloud`@`localhost`'",
+    require => [
+        Service["mysql"],
+        Exec["set-mysql-root-password"],
+        Exec["create-mail-db"]
+    ]
+  }
+
+  exec { "set-mysql-roundcube-password":
+    unless => "mysqladmin -uroundcube -p$roundcubepw status",
+    command => "mysql -uroot -p$mysqlpw mysql -e 'CREATE USER `roundcube`@`localhost` IDENTIFIED BY \"$roundcubepw\"; GRANT ALL PRIVILEGES ON `roundcube`.* TO `roundcube`@`localhost`'",
     require => [
         Service["mysql"],
         Exec["set-mysql-root-password"],

@@ -6,8 +6,12 @@ mysql_root_password: 'ObviouslyChangeThis!!!'
 mysql_mail_password: 'ObviouslyChangeThis!'
 mysql_dspam_password: 'ChangeThisToo'
 mysql_oc_password: 'AndThisOne'
+mysql_rc_password: 'AndThisToo'
 
 # Shouldn't need to change beyond this part but may want to
 mailhostname: 'mail' #first part of fqdn e.g. mail for mail.example.com
 pfahostname: 'pfa' #first part of fqdn e.g. pfa for pfa.example.com
 cloudhostname: 'cloud' #first part of fqdn e.g. cloud for cloud.example.com
+
+roundcube-plugin-carddav-version: '1.0.0'
+roundcube-plugin-sieve-version: '2.1.2'

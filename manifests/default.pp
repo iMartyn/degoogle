@@ -15,8 +15,10 @@ include dspam
 include dovecot
 include ssl
 include owncloud
+include roundcube
 include postfix::config
 include dspam::config
 include dovecot::config
 include nginx::config
 include owncloud::config
+include roundcube::config
