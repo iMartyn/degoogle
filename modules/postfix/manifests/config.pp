@@ -125,31 +125,31 @@ class postfix::config {
     file{ 'mysql_virtual_domains_maps.cf':
         path => "/etc/postfix/mysql_virtual_domains_maps.cf",
         content => template("postfix/mysql_virtual_domains_maps.cf.erb"),
-        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+        require => [ Package['postfix'] ],
     }
 
     file{ 'mysql_virtual_alias_maps.cf':
         path => "/etc/postfix/mysql_virtual_alias_maps.cf",
         content => template("postfix/mysql_virtual_alias_maps.cf.erb"),
-        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+        require => [ Package['postfix'] ],
     }
 
     file{ 'mysql_virtual_mailbox_maps.cf':
         path => "/etc/postfix/mysql_virtual_mailbox_maps.cf",
         content => template("postfix/mysql_virtual_mailbox_maps.cf.erb"),
-        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+        require => [ Package['postfix'] ],
     }
 
     file{ 'mysql_virtual_mailbox_limit_maps.cf':
         path => "/etc/postfix/mysql_virtual_mailbox_limit_maps.cf",
         content => template("postfix/mysql_virtual_mailbox_limit_maps.cf.erb"),
-        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+        require => [ Package['postfix'] ],
     }
 
     file{ 'dspam_filter_access':
         path => "/etc/postfix/dspam_filter_access",
         content => template("postfix/dspam_filter_access.erb"),
-        require => [ Service['mysql'], Exec[set-mysql-root-password] ],
+        require => [ Package['postfix'] ],
     }
 
     exec{ 'add-dspam-to-master.cf':
