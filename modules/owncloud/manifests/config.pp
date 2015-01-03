@@ -5,7 +5,8 @@ class owncloud::config {
 
     file { 'owncloud-config.php':
         path => '/var/www/owncloud/config/config.php',
-        content => template('owncloud/config.php.erb')
+        content => template('owncloud/config.php.erb'),
+        require => Package['owncloud']
     }
 
     exec { 'randomise-owncloud-instance':
