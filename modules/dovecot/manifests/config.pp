@@ -83,7 +83,8 @@ class dovecot::config {
         ensure => present,
         gid => 'mail',
         shell => '/bin/false',
-        notify => Service['dovecot']
+        notify => Service['dovecot'],
+        uid => 150
     }
 
     file{ ['/var/vmail',"/var/vmail/${domain}"]:
