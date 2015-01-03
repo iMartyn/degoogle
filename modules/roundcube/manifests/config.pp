@@ -20,7 +20,7 @@ class roundcube::config {
     exec{ 'create-roundcube-db':
         unless => "mysql -uroot -p$mysql_root_password roundcube -e 'select * from users' > /dev/null",
         command => "echo 'create database roundcube;' | mysql -uroundcube -p$mysql_roundcube_password",
-        require => [ Service['mysql'], Exec[set-mysql-root-password] ]
+        require => [ Service['mysql'], Exec[set-mysql-root-password], Exec['set-mysql-roundcube-password'] ]
 
     }
 
