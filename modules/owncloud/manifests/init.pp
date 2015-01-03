@@ -26,4 +26,8 @@ class owncloud {
             File['apt-owncloud-repo']
         ]
     }
+ 
+    exec { 'chown -R www-data: /var/www/owncloud':
+        require => Package['owncloud']
+    }
 }
