@@ -3,4 +3,4 @@
 :backends:
     - yaml
 :yaml:
-    :datadir: '/vagrant/hieradata'
+    :datadir: 'hieradata'
