@@ -20,13 +20,14 @@ class roundcube::config {
     exec{ 'create-roundcube-db':
         unless => "mysql -uroot -p$mysql_root_password roundcube -e 'select * from users' > /dev/null",
         command => "echo 'create database roundcube;' | mysql -uroundcube -p$mysql_roundcube_password",
-        require => Exec['extractroundcube']
+        require => [ Service['mysql'], Exec[set-mysql-root-password] ]
+
     }
 
     exec{ 'init-roundcube-db':
         unless => "mysql -uroot -p$mysql_root_password roundcube -e 'select * from users' > /dev/null",
         command => "mysql -uroundcube -p$mysql_roundcube_password roundcube < /opt/roundcubemail/SQL/mysql.initial.sql",
-        require => Exec['create-roundcube-db']
+        require => [ Exec['create-roundcube-db'], Exec['extractroundcube'] ]
     }
 
     exec { 'createcarddavdb':
