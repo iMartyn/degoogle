@@ -2,12 +2,14 @@ class owncloud {
 
     exec { 'fetch-owncloud-key':
         command => 'wget -O /tmp/owncloud.key http://download.opensuse.org/repositories/isv:ownCloud:community/Debian_7.0/Release.key',
-        unless => 'apt-key list | grep ownCloud'
+        unless => 'apt-key list | grep ownCloud',
+        before => Exec['apt-get update']
     }
 
     file { 'apt-owncloud-repo':
         content => "deb http://download.opensuse.org/repositories/isv:/ownCloud:/community/Debian_7.0/ /\n",
-        path => '/etc/apt/sources.list.d/owncloud.list'
+        path => '/etc/apt/sources.list.d/owncloud.list',
+        before => Exec['apt-get update']
     }
 
     exec { 'add-owncloud-key':
