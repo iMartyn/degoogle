@@ -25,7 +25,7 @@ class postfix::config {
     }
     postfix_maincf{ 'mydestination':
         key => "mydestination",
-        value => "mail.$domain, $domain"
+        value => "virtualsonly.$domain"
     }
 #    postfix_maincf{ 'smtpd_relay_restrictions': # Not on this version of postfix
 #        key => "smtpd_relay_restrictions",
