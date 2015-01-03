@@ -120,7 +120,7 @@ class postfix::config {
     exec{ 'hashmailadminpw':
         onlyif => "grep '############ENCPASS##############' /tmp/mail.sql",
         require => File['mail.sql'],
-        command => "sed s/'############ENCPASS##############'/\"`openssl passwd -1 -salt $(pwgen -nC 8 1 | sed s/' '//g) $admin_pass`\"/g -i /tmp/mail.sql",
+        command => "sed s/'############ENCPASS##############'/\"`openssl passwd -1 -salt \$(pwgen -nC 8 1 | sed s/' '//g) \$admin_pass`\"/g -i /tmp/mail.sql",
     }
 
     exec{ 'create-mail-db':
