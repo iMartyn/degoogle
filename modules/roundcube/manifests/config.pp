@@ -14,7 +14,7 @@ class roundcube::config {
     exec { 'resetroundcubehash' :
         command => "sed s/'##########HASH##########'/\"`pwgen -nC 24 1 | sed s/' '//g`\"/g -i /opt/roundcubemail/config/config.inc.php",
         onlyif => "grep '##########HASH##########' /opt/roundcubemail/config/config.inc.php",
-        require => Exec['extractroundcube']
+        require => [ Exec['extractroundcube'], File['/opt/roundcubemail/config/config.inc.php'] ]
     }
 
     exec{ 'create-roundcube-db':
