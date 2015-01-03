@@ -29,6 +29,20 @@ class nginx::config {
         require => File['/etc/nginx/sites-available/mail']
     }
 
+    file{ 'nginx-mailpile-available':
+        path => "/etc/nginx/sites-available/mailpile",
+        content => template("nginx/mailpile.erb"),
+        notify => Service['nginx'],
+        require => Package['nginx']
+    }
+    file{ 'nginx-mail-enabled':
+        path => '/etc/nginx/sites-enabled/mailpile',
+        ensure => 'link',
+        target => '/etc/nginx/sites-available/mailpile',
+        notify => Service['nginx'],
+        require => File['/etc/nginx/sites-available/mailpile']
+    }
+
     file{ 'nginx-pfa-available':
         path => "/etc/nginx/sites-available/pfa",
         content => template("nginx/pfa.erb"),

@@ -40,5 +40,6 @@ Vagrant.configure("2") do |config|
   # Forward guest port 80 to host port 8888 and name mapping
   config.vm.network :forwarded_port, guest: 80, host: 8888
   config.vm.network :forwarded_port, guest: 443, host: 8443
+  config.vm.network :forwarded_port, guest: 33411, host: 33411
 
 end
