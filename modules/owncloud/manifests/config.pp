@@ -39,12 +39,12 @@ class owncloud::config {
     exec{ 'create-owncloud-db':
         unless => "mysql -uroot -p$mysql_root_password owncloud -e 'select * from oc_users' > /dev/null",
         command => "/usr/bin/mysql -u root -p$mysql_root_password mysql < /tmp/owncloud.sql && echo \"-- Removed for security\" > /tmp/owncloud.sql && /usr/bin/php /var/www/owncloud/occ upgrade",
-        require => [ Service['mysql'], File['owncloud.sql'], Exec[set-mysql-root-password] ]
+        require => [ Service['mysql'], File['owncloud.sql'], Exec[set-mysql-root-password], Package['php5-cli'] ]
     }
 
     exec{ 'enable-owncloud-external':
-        unless => "test 0 -lt `mysql -uroot -p$mysql_root_password owncloud -e \"select count(*) from oc_appconfig where appid = 'user_external' and configkey = 'enabled' and configvalue = 'yes'\"`",
-        command => "/usr/bin/php /var/www/owncloud/occ app:enable user_external"
+        unless => "test 1 -eq `mysql -B -N -uroot -p$mysql_root_password owncloud -e \"select count(*) from oc_appconfig where appid = 'user_external' and configkey = 'enabled' and configvalue = 'yes'\"`",
+        command => "/usr/bin/php /var/www/owncloud/occ app:enable user_external",
+        require => [ Package['php5-cli'], Package['owncloud'], Exec['create-owncloud-db'] ]
     }
-
 }
