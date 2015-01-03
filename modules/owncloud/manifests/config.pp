@@ -6,7 +6,10 @@ class owncloud::config {
     file { 'owncloud-config.php':
         path => '/var/www/owncloud/config/config.php',
         content => template('owncloud/config.php.erb'),
-        require => Package['owncloud']
+        require => Package['owncloud'],
+        owner => 'www-data',
+        group => 'www-data',
+        replace => false
     }
 
     exec { 'randomise-owncloud-instance':
@@ -35,8 +38,13 @@ class owncloud::config {
 
     exec{ 'create-owncloud-db':
         unless => "mysql -uroot -p$mysql_root_password owncloud -e 'select * from oc_users' > /dev/null",
-        command => "/usr/bin/mysql -u root -p$mysql_root_password mysql < /tmp/owncloud.sql && echo \"-- Removed for security\" > /tmp/owncloud.sql",
+        command => "/usr/bin/mysql -u root -p$mysql_root_password mysql < /tmp/owncloud.sql && echo \"-- Removed for security\" > /tmp/owncloud.sql && /usr/bin/php /var/www/owncloud/occ upgrade",
         require => [ Service['mysql'], File['owncloud.sql'], Exec[set-mysql-root-password] ]
+    }
+
+    exec{ 'enable-owncloud-external':
+        unless => "test 0 -lt `mysql -uroot -p$mysql_root_password owncloud -e \"select count(*) from oc_appconfig where appid = 'user_external' and configkey = 'enabled' and configvalue = 'yes'\"`",
+        command => "/usr/bin/php /var/www/owncloud/occ app:enable user_external"
     }
 
 }

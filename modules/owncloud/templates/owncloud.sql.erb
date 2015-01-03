@@ -639,7 +639,7 @@ CREATE TABLE `oc_group_user` (
 
 LOCK TABLES `oc_group_user` WRITE;
 /*!40000 ALTER TABLE `oc_group_user` DISABLE KEYS */;
-INSERT INTO `oc_group_user` VALUES ('admin','<%= @admin_user %>@<%= @domain %>');
+INSERT INTO `oc_group_user` VALUES ('admin','admin');
 /*!40000 ALTER TABLE `oc_group_user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -993,7 +993,7 @@ CREATE TABLE `oc_users` (
 
 LOCK TABLES `oc_users` WRITE;
 /*!40000 ALTER TABLE `oc_users` DISABLE KEYS */;
-INSERT INTO `oc_users` VALUES ('<%= @admin_user %>@<%= @domain %>',NULL,'$2a$08$/R3ckR842k9Hg6v/vSHbV.AIB81D9rMGg.Z6rxoFDqUjPBsttu6se');
+INSERT INTO `oc_users` VALUES ('admin',NULL,'$2a$08$/R3ckR842k9Hg6v/vSHbV.AIB81D9rMGg.Z6rxoFDqUjPBsttu6se');
 /*!40000 ALTER TABLE `oc_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
