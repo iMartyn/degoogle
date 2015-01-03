@@ -111,16 +111,16 @@ class postfix::config {
     $mysql_mail_password = hiera('mysql_mail_password')
 
     file{ 'mail.sql':
-        path => "/tmp/_mail.sql",
+        path => "/tmp/mail.sql",
         content => template("postfix/mail.sql.erb"),
         require => [ Service['mysql'], Exec[set-mysql-root-password] ],
-#        replace => false
+        replace => false
     }
 
     exec{ 'hashmailadminpw':
-        onlyif => "grep '############ENCPASS##############' /tmp/_mail.sql",
+        onlyif => "grep '############ENCPASS##############' /tmp/mail.sql",
         require => File['mail.sql'],
-        command => "sed s/'############ENCPASS##############'/\"`openssl passwd -1 -salt $(pwgen -nC 8 1 | sed s/' '//g) $admin_pass | sed -e 's/[\\/&]/\\\\&/g'`\"/g -i /tmp/_mail.sql",
+        command => "sed s/'############ENCPASS##############'/\"`openssl passwd -1 -salt $(pwgen -nC 8 1 | sed s/' '//g) $admin_pass | sed -e 's/[\\/&]/\\\\&/g'`\"/g -i /tmp/mail.sql",
     }
 
     exec{ 'create-mail-db':
