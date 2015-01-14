@@ -27,13 +27,9 @@ class postfix::config {
         key => "mydestination",
         value => "virtualsonly.$domain"
     }
-#    postfix_maincf{ 'smtpd_relay_restrictions': # Not on this version of postfix
-#        key => "smtpd_relay_restrictions",
-#        value => "permit_mynetworks permit_sasl_authenticated defer_unauth_destination"
-#    }
     postfix_maincf{ 'smtpd_recipient_restrictions':
         key => "smtpd_recipient_restrictions",
-        value => "check_relay_domains permit_sasl_authenticated check_client_access pcre:/etc/postfix/dspam_filter_access check_policy_service inet:127.0.0.1:60000"
+        value => "permit_mynetworks permit_sasl_authenticated reject_unauth_destination"
     }
     postfix_maincf{ 'dspam_destination_recipient_limit':
         key => "dspam_destination_recipient_limit",
