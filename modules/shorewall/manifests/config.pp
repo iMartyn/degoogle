@@ -4,7 +4,7 @@ class shorewall::config {
     $mysql_mail_password = hiera('mysql_mail_password')
 
     file{ '/etc/shorewall/':
-        ensure => "directory"
+        ensure => "directory",
         owner => "root",
         group => "root",
         mode => 0755
