@@ -18,6 +18,7 @@ include owncloud
 include roundcube
 include postfixadmin
 include backup2l
+include shorewall
 include postfix::config
 include dspam::config
 include dovecot::config
@@ -26,3 +27,4 @@ include owncloud::config
 include roundcube::config
 include postfixadmin::config
 include backup2l::config
+include shorewall::config
