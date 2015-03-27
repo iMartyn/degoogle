@@ -7,7 +7,7 @@ class owncloud {
     }
 
     file { 'apt-owncloud-repo':
-        content => "deb http://download.opensuse.org/repositories/isv:/ownCloud:/community/Debian_7.0/ /\n",
+        content => "deb http://download.opensuse.org/repositories/isv:/ownCloud:/community:7.0/Debian_7.0/ /\n",
         path => '/etc/apt/sources.list.d/owncloud.list',
         before => Exec['apt-get update']
     }
