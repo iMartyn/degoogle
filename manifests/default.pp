@@ -11,7 +11,6 @@ include php::pear
 include php::pecl
 include mysql
 include postfix
-include dspam
 include dovecot
 include ssl
 include owncloud
@@ -20,7 +19,6 @@ include postfixadmin
 include backup2l
 include shorewall
 include postfix::config
-include dspam::config
 include dovecot::config
 include nginx::config
 include owncloud::config
