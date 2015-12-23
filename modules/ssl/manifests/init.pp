@@ -10,9 +10,9 @@ class ssl {
     }
     file { '/etc/ssl/private':
         ensure => 'directory',
-        mode => 700,
+        mode => 710,
         owner => 'root',
-        group => 'www-data'
+        group => 'ssl-cert'
     }
     $mailhostname = hiera('mailhostname')
     $cloudhostname = hiera('cloudhostname')
