@@ -24,7 +24,7 @@ class ssl {
     }
     file { '/home/letsencrypt':
         ensure => 'directory',
-        mode => 700,
+        mode => '0700',
         owner => 'letsencrypt',
         group => 'www-data'
     }
