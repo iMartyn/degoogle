@@ -46,6 +46,10 @@ class ssl {
         user => 'letsencrypt',
         creates => '/home/letsencrypt/data/account.key'
     }
+    exec { 'fetch-intermediate-cert':
+        command => '/usr/bin/wget -O - https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem > /home/letsencrypt/data/intermediate.pem',
+        creates => '/home/letsencrypt/data/intermediate.pem'
+    }
     each ( $hostnames ) |$hostname| {
         exec { "create-$hostname-key":
             command => "/usr/bin/openssl genrsa > /home/letsencrypt/data/$hostname.key",
@@ -54,7 +58,8 @@ class ssl {
         }
         exec { "copy-$hostname-key":
             command => "cp /home/letsencrypt/data/$hostname.key /etc/ssl/private/$hostname.key",
-            creates => "/etc/ssl/private/$hostname.key"
+            creates => "/etc/ssl/private/$hostname.key",
+            requires => "create-$hostname-key"
         }
         exec { "create-$hostname-csr":
             command => "/usr/bin/openssl req -new -sha256 -key /home/letsencrypt/data/$hostname.key -subj \"/CN=$hostname.$domain\" > /home/letsencrypt/data/$hostname.csr",
@@ -62,12 +67,19 @@ class ssl {
         }
         exec { "sign-$hostname-cert":
             command => "/usr/bin/python /home/letsencrypt/acme-tiny/acme_tiny.py --account-key /home/letsencrypt/data/account.key --csr /home/letsencrypt/data/$hostname.csr --acme-dir /var/www/challenges > /home/letsencrypt/data/$hostname.crt",
-            creates => "/home/letsencrypt/data/$hostname.crt"
+            creates => "/home/letsencrypt/data/$hostname.crt",
+            requires => "create-$hostname-csr"
+        }
+        exec { "add-$hostname-intermediate":
+            command => "cat /home/letsencrypt/data/$hostname.crt /home/letsencrypt/data/intermediate.pem /home/letsencrypt/data/$hostname.pem",
+            creates => "/home/letsencrypt/data/$hostname.pem",
+            requires => [ "create-$hostname-csr", "fetch-intermediate-cert" ]
         }
         exec { "copy-$hostname-cert":
-            command => "cp /home/letsencrypt/data/$hostname.crt /etc/ssl/mycerts/$hostname.crt",
-            creates => "/etc/ssl/mycerts/$hostname.crt",
-            notify => Service["nginx"]
+            command => "cp /home/letsencrypt/data/$hostname.pem /etc/ssl/mycerts/$hostname.pem",
+            creates => "/etc/ssl/mycerts/$hostname.pem",
+            notify => Service["nginx"],
+            requires => "add-$hostname-intermediate"
         }
     }
 }
