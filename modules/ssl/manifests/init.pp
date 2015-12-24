@@ -4,13 +4,13 @@ class ssl {
     }
     file { '/etc/ssl/mycerts':
         ensure => 'directory',
-        mode => 770,
+        mode => '0770',
         owner => 'root',
         group => 'www-data'
     }
     file { '/etc/ssl/private':
         ensure => 'directory',
-        mode => 710,
+        mode => '0710',
         owner => 'root',
         group => 'ssl-cert'
     }
