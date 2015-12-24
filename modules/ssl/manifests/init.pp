@@ -27,4 +27,15 @@ class ssl {
         owner => 'letsencrypt',
         group => 'www-data'
     }
+    file { '/home/letsencrypt/data':
+        ensure => 'directory',
+        mode => 700,
+        owner => 'letsencrypt',
+        group => 'www-data'
+    }
+    exec { 'git-clone-acme-tiny':
+        command => 'git clone https://github.com/diafygi/acme-tiny.git',
+        path => '/home/letsencrypt',
+        user => 'letsencrypt',
+        creates => '/home/letsencrypt/acme-tiny',
 }
