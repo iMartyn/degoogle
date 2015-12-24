@@ -18,6 +18,7 @@ class ssl {
     $cloudhostname = hiera('cloudhostname')
     $pfahostname = hiera('pfahostname')
     $hostnames = [ $mailhostname, $cloudhostname, $pfahostname ]
+    $domain = hiera('domain')
     user { 'letsencrypt':
 	ensure => 'present',
 	groups => 'www-data'
@@ -49,6 +50,18 @@ class ssl {
         exec { "create-$hostname-key":
             command => "/usr/bin/openssl genrsa > /home/letsencrypt/data/$hostname.key",
             user => 'letsencrypt',
+            creates => "/home/letsencrypt/data/$hostname.key"
+        }
+        exec { "copy-$hostname-key":
+            command => "cp /home/letsencrypt/data/$hostname.key /etc/ssl/private/$hostname.key",
+            creates => "/etc/ssl/private/$hostname.key"
+        }
+        exec { "create-$hostname-csr":
+            command => "/usr/bin/openssl req -new -sha256 -key /home/letsencrypt/data/$hostname.key -subj \"/CN=$hostname.$domain\" > /home/letsencrypt/data/$hostname.csr",
+            creates => "/home/letsencrypt/data/$hostname.csr"
+        }
+        exec { "sign-$hostname-cert":
+            command => "/usr/bin/python /home/letsencrypt/acme-tiny/acme_tiny.py --account-key /home/letsencrypt/data/account.key --csr /home/letsencrypt/data/$hostname.csr --acme-dir /var/www/challenges > /home/letsencrypt/data/$hostname.key",
             creates => "/home/letsencrypt/data/$hostname.key"
         }
     }
