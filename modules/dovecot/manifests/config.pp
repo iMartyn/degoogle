@@ -91,6 +91,6 @@ class dovecot::config {
         ensure => "directory",
         owner => 'vmail',
         group => 'mail',
-        mode => 770
+        mode => '0770'
     }
 }
