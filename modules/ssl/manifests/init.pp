@@ -61,8 +61,8 @@ class ssl {
             creates => "/home/letsencrypt/data/$hostname.csr"
         }
         exec { "sign-$hostname-cert":
-            command => "/usr/bin/python /home/letsencrypt/acme-tiny/acme_tiny.py --account-key /home/letsencrypt/data/account.key --csr /home/letsencrypt/data/$hostname.csr --acme-dir /var/www/challenges > /home/letsencrypt/data/$hostname.key",
-            creates => "/home/letsencrypt/data/$hostname.key"
+            command => "/usr/bin/python /home/letsencrypt/acme-tiny/acme_tiny.py --account-key /home/letsencrypt/data/account.key --csr /home/letsencrypt/data/$hostname.csr --acme-dir /var/www/challenges > /home/letsencrypt/data/$hostname.crt",
+            creates => "/home/letsencrypt/data/$hostname.crt"
         }
     }
 }
