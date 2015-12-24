@@ -65,7 +65,7 @@ class nginx::config {
     file{ '/var/www/challenges':
         ensure => 'directory',
         mode => '0770',
-        user => 'www-data',
+        owner => 'www-data',
         group => 'www-data'
     }
 }
