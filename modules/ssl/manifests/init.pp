@@ -41,7 +41,7 @@ class ssl {
         creates => '/home/letsencrypt/acme-tiny'
     }
     exec { 'create-letsencrypt-account-key':
-	command => '/usr/bin/openssl genrsa > /home/letsencrypt/data/account.key'
+	command => '/usr/bin/openssl genrsa > /home/letsencrypt/data/account.key',
         user => 'letsencrypt',
         creates => '/home/letsencrypt/data/account.key'
     }
