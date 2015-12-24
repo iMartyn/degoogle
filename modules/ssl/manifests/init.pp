@@ -17,6 +17,7 @@ class ssl {
     $mailhostname = hiera('mailhostname')
     $cloudhostname = hiera('cloudhostname')
     $pfahostname = hiera('pfahostname')
+    $hostnames = [ $mailhostname, $cloudhostname, $pfahostname ]
     user { 'letsencrypt':
 	ensure => 'present',
 	groups => 'www-data'
@@ -43,5 +44,12 @@ class ssl {
 	command => '/usr/bin/openssl genrsa > /home/letsencrypt/data/account.key'
         user => 'letsencrypt',
         creates => '/home/letsencrypt/data/account.key'
+    }
+    each ( $hostnames ) |$hostname| {
+        exec { "create-$hostname-key":
+            command => "/usr/bin/openssl genrsa > /home/letsencrypt/data/$hostname.key",
+            user => 'letsencrypt',
+            creates => "/home/letsencrypt/data/$hostname.key"
+        }
     }
 }
