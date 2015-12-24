@@ -34,7 +34,7 @@ class ssl {
         group => 'www-data'
     }
     exec { 'git-clone-acme-tiny':
-        command => 'git clone https://github.com/diafygi/acme-tiny.git',
+        command => '/usr/bin/git clone https://github.com/diafygi/acme-tiny.git',
         path => '/home/letsencrypt',
         user => 'letsencrypt',
         creates => '/home/letsencrypt/acme-tiny'
