@@ -63,20 +63,24 @@ class ssl {
         }
         exec { "create-$hostname-csr":
             command => "/usr/bin/openssl req -new -sha256 -key /home/letsencrypt/data/$hostname.key -subj \"/CN=$hostname.$domain\" > /home/letsencrypt/data/$hostname.csr",
+            user => 'letsencrypt',
             creates => "/home/letsencrypt/data/$hostname.csr"
         }
         exec { "sign-$hostname-cert":
             command => "/usr/bin/python /home/letsencrypt/acme-tiny/acme_tiny.py --account-key /home/letsencrypt/data/account.key --csr /home/letsencrypt/data/$hostname.csr --acme-dir /var/www/challenges > /home/letsencrypt/data/$hostname.crt",
+            user => 'letsencrypt',
             creates => "/home/letsencrypt/data/$hostname.crt",
             require => Exec["create-$hostname-csr"]
         }
         exec { "add-$hostname-intermediate":
             command => "cat /home/letsencrypt/data/$hostname.crt /home/letsencrypt/data/intermediate.pem > /home/letsencrypt/data/$hostname.pem",
+            user => 'letsencrypt',
             creates => "/home/letsencrypt/data/$hostname.pem",
             require => [ Exec["create-$hostname-csr"], Exec["fetch-intermediate-cert"] ]
         }
         exec { "copy-$hostname-cert":
             command => "cp /home/letsencrypt/data/$hostname.pem /etc/ssl/mycerts/$hostname.pem",
+            user => 'letsencrypt',
             creates => "/etc/ssl/mycerts/$hostname.pem",
             notify => Service["nginx"],
             require => Exec["add-$hostname-intermediate"]
