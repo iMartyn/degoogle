@@ -7,10 +7,10 @@ define postfix_maincf($key="",$value="") {
     }
 }
 
-define postfix_mastercf_uncomment($name="") {
+define postfix_mastercf_uncomment($paramname="") {
     exec { "postfix_mastercf_uncomment_$name":
-        command => "sed s/\"^#\\($name[ \\t]\\)\"/\"\\1\"/g -i /etc/postfix/master.cf",
-        unless => "grep \"^$name[ \\t]\" /etc/postfix/master.cf", 
+        command => "sed s/\"^#\\($paramname[ \\t]\\)\"/\"\\1\"/g -i /etc/postfix/master.cf",
+        unless => "grep \"^$paramname[ \\t]\" /etc/postfix/master.cf", 
         notify => Service['postfix'],
         require => Package['postfix']
     }
