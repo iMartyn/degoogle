@@ -48,4 +48,24 @@ class nginx::config {
         ensure => absent,
         require => Package['nginx']
     }
+
+    file{ 'nginx-httpsredirects-available':
+        path => "/etc/nginx/sites-available/httpsredirects",
+        content => template("nginx/httpsredirects.erb"),
+        notify => Service['nginx'],
+        require => Package['nginx']
+    }
+    file{ 'nginx-httpsredirects-enabled':
+        path => '/etc/nginx/sites-enabled/httpsredirects',
+        ensure => 'link',
+        target => '/etc/nginx/sites-available/httpsredirects',
+        notify => Service['nginx'],
+        require => File['/etc/nginx/sites-available/httpsredirects']
+    }
+    file{ '/var/www/challenges':
+        ensure => 'directory',
+        mode => '0770',
+        user => 'www-data',
+        group => 'www-data'
+    }
 }

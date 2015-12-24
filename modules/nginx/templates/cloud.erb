@@ -22,6 +22,12 @@ server {
 	fastcgi_buffers 4 64K;
 	dav_methods off;
 
+	location /.well-known/acme-challenge/ {
+		alias /var/www/challenges/;
+		try_files $uri =404;
+	}
+
+
 	rewrite ^/caldav(.*)$ /remote.php/caldav$1 redirect;
 	rewrite ^/carddav(.*)$ /remote.php/carddav$1 redirect;
 	rewrite ^/webdav(.*)$ /remote.php/webdav$1 redirect;
