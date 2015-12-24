@@ -35,7 +35,7 @@ class ssl {
     }
     exec { 'git-clone-acme-tiny':
         command => '/usr/bin/git clone https://github.com/diafygi/acme-tiny.git',
-        path => '/home/letsencrypt',
+        cwd => '/home/letsencrypt',
         user => 'letsencrypt',
         creates => '/home/letsencrypt/acme-tiny'
     }
