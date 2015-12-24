@@ -71,7 +71,7 @@ class ssl {
             require => Exec["create-$hostname-csr"]
         }
         exec { "add-$hostname-intermediate":
-            command => "cat /home/letsencrypt/data/$hostname.crt /home/letsencrypt/data/intermediate.pem /home/letsencrypt/data/$hostname.pem",
+            command => "cat /home/letsencrypt/data/$hostname.crt /home/letsencrypt/data/intermediate.pem > /home/letsencrypt/data/$hostname.pem",
             creates => "/home/letsencrypt/data/$hostname.pem",
             require => [ Exec["create-$hostname-csr"], Exec["fetch-intermediate-cert"] ]
         }
